@@ -34,6 +34,31 @@ export function requiredDates(w,profile) {
   validatePeriod(profile);
   return weekDays(w.year,w.week).slice(0,5).filter(d=>d>=profile.periodStart&&d<=profile.periodEnd);
 }
+// Reminders follow Finnish local time, regardless of the device's time zone.
+// This only calculates what to show when the app is visible; it schedules no push.
+export function pendingApprovalReminders(state, instant = new Date()) {
+  const profile=state.profile;
+  try { validatePeriod(profile); } catch { return []; }
+  if(profile.periodStart<'2000-01-01'||profile.periodEnd>'2100-12-31')return [];
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Helsinki',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(instant).map(p=>[p.type,p.value]));
+  const today=`${parts.year}-${parts.month}-${parts.day}`,clock=Number(parts.hour)*60+Number(parts.minute);
+  const monday=new Date(profile.periodStart+'T12:00:00Z');
+  monday.setUTCDate(monday.getUTCDate()-(monday.getUTCDay()||7)+1);
+  if(monday.getUTCFullYear()<2000)monday.setUTCDate(monday.getUTCDate()+7);
+  const reminders=[];
+  while(monday.toISOString().slice(0,10)<=profile.periodEnd&&monday.toISOString().slice(0,10)<=today){
+    const w=isoWeek(new Date(monday.getUTCFullYear(),monday.getUTCMonth(),monday.getUTCDate()));
+    const days=weekDays(w.year,w.week).slice(0,5),key=`${w.year}-W${w.week}`;
+    const friday=days[4],nextMonday=new Date(monday);nextMonday.setUTCDate(nextMonday.getUTCDate()+7);
+    const followupDate=nextMonday.toISOString().slice(0,10);
+    const due=today>friday||(today===friday&&clock>=600);
+    if(due&&!state.approved?.[key]&&days.some(d=>d>=profile.periodStart&&d<=profile.periodEnd)){
+      reminders.push({key,year:w.year,week:w.week,followup:today>followupDate||(today===followupDate&&clock>=600)});
+    }
+    monday.setUTCDate(monday.getUTCDate()+7);
+  }
+  return reminders;
+}
 export function validateDay(d) {
   if(!d||!Array.isArray(d.tasks)||!d.tasks.length)throw Error('Valitse vähintään yksi tehtävä tai poissaolo.');
   if(d.tasks.some(t=>![...TASKS,...ABSENCES,...LEGACY_TASKS].includes(t)))throw Error('Tuntematon työtehtävä.');

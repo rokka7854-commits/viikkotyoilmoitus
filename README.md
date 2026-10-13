@@ -1,6 +1,6 @@
 # Viikkotyöilmoitus
 
-Puhelimella ja tietokoneella käytettävä työssäoppimisen viikkotyökirja. Testiversio 5.
+Puhelimella ja tietokoneella käytettävä työssäoppimisen viikkotyökirja. Testiversio 6.
 
 ## Käyttö
 
@@ -30,3 +30,9 @@ Sovellusta voi käyttää myös selaimessa. Ensimmäisen avauksen jälkeen paika
 Julkaistava kansio on repositorion juuri. Valitse Settings → Pages → Deploy from a branch → main → / (root).
 
 Sovellus on tavallista HTML-, CSS- ja JavaScript-koodia. Erillistä rakennusvaihetta tai taustapalvelinta ei tarvita.
+
+## Hyväksyntämuistutukset
+
+Sovellus muistuttaa jakson hyväksymättömistä viikoista perjantaina klo 10 Suomen aikaa ja uudelleen seuraavana maanantaina klo 10. Muistutus säilyy, kunnes hyväksyntä on tallennettu. Myös kirjaamattomasta jaksoon kuuluvasta viikosta muistutetaan.
+
+Muistutus näkyy sovelluksen sisällä. Aika tarkistetaan avattaessa, sovellukseen palattaessa ja aktiivisen käytön aikana noin 30 sekunnin välein. Taustalle jäänyt tai suljettu sovellus ei lähetä puhelinilmoitusta. Muistutuksesta voi avata kyseisen viikon. Työpaikkaohjaajanäkymässä tai jaettua raporttia katseltaessa muistutusta ei näytetä.
