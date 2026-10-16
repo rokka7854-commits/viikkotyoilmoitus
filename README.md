@@ -1,6 +1,6 @@
 # Viikkotyöilmoitus
 
-Puhelimella ja tietokoneella käytettävä työssäoppimisen viikkotyökirja. Testiversio 6.
+Puhelimella ja tietokoneella käytettävä työssäoppimisen viikkotyöilmoitus.
 
 ## Käyttö
 
